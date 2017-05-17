@@ -1,0 +1,14 @@
+*.o
+*.d
+*.swp
+build/
+Makefile
+*.cmake
+*.vcxproj
+*.sln
+*.a
+*.so
+*.so.*
+CMakeCache.txt
+CMakeFiles/
+simple
