@@ -15,43 +15,42 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef VRTK_SHAPE_H_
-#define VRTK_SHAPE_H_
+#ifndef VRTK_SHAPE_CAPS_H_
+#define VRTK_SHAPE_CAPS_H_
 
-#include <gmath/gmath.h>
+#include "shape.h"
 
 namespace vrtk {
 
-class Widget;
-class Sphere;
-class HitPoint;
-class ShapePriv;
+class ShapeCapsPriv;
 
-enum ShapeType {
-	SHAPE_UNKNOWN,
-	SHAPE_MESH
-};
-
-class Shape {
+class ShapeCaps : public Shape {
 private:
-	ShapePriv *priv;
+	ShapeCapsPriv *priv;
 
 public:
-	Shape();
-	virtual ~Shape();
+	ShapeCaps();
+	ShapeCaps(const Vec3 &a, const Vec3 &b, float rad);
+	~ShapeCaps();
 
-	virtual ShapeType get_type() const;
+	ShapeType get_type() const;
 
-	virtual void set_widget(Widget *w);
-	virtual Widget *get_widget() const;
+	void set_capsule(const Vec3 &a, const Vec3 &b, float rad);
+	void set_end(int idx, const Vec3 &v);
+	void set_radius(float r);
 
-	virtual bool contains(const Vec3 &pt) const = 0;
-	virtual bool intersect(const Sphere &sph, HitPoint *hit = 0) const = 0;
-	virtual bool intersect(const Ray &ray, HitPoint *hit = 0) const = 0;
+	const Vec3 &get_end(int idx) const;
+	const float get_radius() const;
 
-	virtual void draw() const;
+	const Vec3 &get_axis() const;
+
+	bool contains(const Vec3 &pt) const;
+	bool intersect(const Sphere &sph, HitPoint *hit = 0) const;
+	bool intersect(const Ray &ray, HitPoint *hit = 0) const;
+
+	void draw() const;
 };
 
 }	// namespace vrtk
 
-#endif	/* VRTK_SHAPE_H_ */
+#endif	/* VRTK_SHAPE_CAPS_H_ */

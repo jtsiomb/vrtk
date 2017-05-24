@@ -15,9 +15,44 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef VRTK_H_
-#define VRTK_H_
+#ifndef VRTK_SHAPE_H_
+#define VRTK_SHAPE_H_
 
-#include "widget.h"
+#include <gmath/gmath.h>
 
-#endif	/* VRTK_H_ */
+namespace vrtk {
+
+class Widget;
+class Sphere;
+class HitPoint;
+class ShapePriv;
+
+enum ShapeType {
+	SHAPE_UNKNOWN,
+	SHAPE_CAPSULOID,
+	SHAPE_MESH
+};
+
+class Shape {
+private:
+	ShapePriv *priv;
+
+public:
+	Shape();
+	virtual ~Shape();
+
+	virtual ShapeType get_type() const;
+
+	virtual void set_widget(Widget *w);
+	virtual Widget *get_widget() const;
+
+	virtual bool contains(const Vec3 &pt) const = 0;
+	virtual bool intersect(const Sphere &sph, HitPoint *hit = 0) const = 0;
+	virtual bool intersect(const Ray &ray, HitPoint *hit = 0) const = 0;
+
+	virtual void draw() const;
+};
+
+}	// namespace vrtk
+
+#endif	/* VRTK_SHAPE_H_ */

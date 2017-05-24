@@ -19,11 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VRTK_WIDGET_H_
 
 #include <gmath/gmath.h>
-#include "shape.h"
 
 namespace vrtk {
 
 class WidgetPriv;
+class Shape;
 
 class Widget {
 private:

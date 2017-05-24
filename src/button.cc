@@ -15,9 +15,26 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef VRTK_H_
-#define VRTK_H_
+#include "button.h"
 
-#include "widget.h"
+namespace vrtk {
 
-#endif	/* VRTK_H_ */
+class ButtonPriv {
+public:
+};
+
+Button::Button()
+{
+	priv = new ButtonPriv;
+}
+
+Button::~Button()
+{
+	delete priv;
+}
+
+void Button::draw() const
+{
+}
+
+}	// namespace vrtk

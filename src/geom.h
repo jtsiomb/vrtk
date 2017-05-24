@@ -40,6 +40,8 @@ public:
 bool intersect(const Ray &ray, const Sphere &sph, HitPoint *hit = 0);
 bool intersect(const Sphere &s1, const Sphere &s2, HitPoint *hit = 0);
 
+float proj_point_line_param(const Vec3 &pt, const Ray &ray);
+
 }	// namespace vrtk
 
 #endif	/* GEOM_H_ */

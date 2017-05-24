@@ -84,4 +84,10 @@ bool intersect(const Sphere &s1, const Sphere &s2, HitPoint *hit)
 	return true;
 }
 
+float proj_point_line_param(const Vec3 &pt, const Ray &ray)
+{
+	Vec3 pdir = normalize(pt - ray.origin);
+	return dot(pdir, ray.dir);
+}
+
 }	// namespace vrtk

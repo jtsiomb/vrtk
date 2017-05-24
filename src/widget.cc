@@ -29,6 +29,7 @@ public:
 	Vec3 pos, scale;
 	Quat rot;
 	Mat4 xform;
+	bool xform_valid;
 
 	Shape *shape;
 };
@@ -86,7 +87,7 @@ const Vec3 &Widget::get_scaling() const
 	return priv->scale;
 }
 
-Mat4 Widget::get_xform() const
+const Mat4 &Widget::get_xform() const
 {
 	if(!priv->xform_valid) {
 		priv->xform.translation(priv->pos);

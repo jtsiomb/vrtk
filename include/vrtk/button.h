@@ -15,9 +15,26 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef VRTK_H_
-#define VRTK_H_
+#ifndef VRTK_BUTTON_H_
+#define VRTK_BUTTON_H_
 
 #include "widget.h"
 
-#endif	/* VRTK_H_ */
+namespace vrtk {
+
+class ButtonPriv;
+
+class Button : public Widget {
+private:
+	ButtonPriv *priv;
+
+public:
+	Button();
+	virtual ~Button();
+
+	void draw() const;
+};
+
+}	// namespace vrtk
+
+#endif	/* VRTK_BUTTON_H_ */
