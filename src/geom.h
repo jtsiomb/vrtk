@@ -37,8 +37,18 @@ public:
 	Sphere(const Vec3 &pos, float rad);
 };
 
+class Cylinder {
+public:
+	Vec3 end[2];
+	float rad;
+
+	Cylinder();
+	Cylinder(const Vec3 &e0, const Vec3 &e1, float rad);
+};
+
 bool intersect(const Ray &ray, const Sphere &sph, HitPoint *hit = 0);
 bool intersect(const Sphere &s1, const Sphere &s2, HitPoint *hit = 0);
+bool intersect(const Ray &ray, const Cylinder &cyl, HitPoint *hit = 0);
 
 float proj_point_line_param(const Vec3 &pt, const Ray &ray);
 

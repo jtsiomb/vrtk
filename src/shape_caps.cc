@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <gmath/gmath.h>
 #include "shape_caps.h"
+#include "geom.h"
 
 namespace vrtk {
 
@@ -29,6 +30,8 @@ public:
 	float axis_len;
 	bool derived_valid;
 };
+
+static void update_derived(ShapeCapsPriv *priv);
 
 ShapeCaps::ShapeCaps()
 {
@@ -89,12 +92,35 @@ const Vec3 &ShapeCaps::get_axis() const
 
 bool ShapeCaps::contains(const Vec3 &pt) const
 {
-	float t = proj_point_line(pt, Ray(end[0], priv->axis));
-	if(t < 0.0) return 
+	float radsq = priv->rad * priv->rad;
+	float t = proj_point_line_param(pt, Ray(priv->end[0], priv->axis));
+	if(t < 0.0) {
+		return length_sq(priv->end[0] - pt) <= radsq;
+	}
+	if(t > 1.0) {
+		return length_sq(priv->end[1] - pt) <= radsq;
+	}
+	Vec3 projpt = priv->end[0] + priv->axis * t;
+	return length_sq(projpt - pt) <= radsq;
 }
 
+/* intersection between sphere and capsuloid is the same as containment of a
+ * point in a capsuloid of increased radius by as much as the radius of the
+ * sphere
+ */
 bool ShapeCaps::intersect(const Sphere &sph, HitPoint *hit) const
 {
+	float rad = priv->rad + sph.rad;
+	float radsq = rad * rad;
+	float t = proj_point_line_param(sph.pos, Ray(priv->end[0], priv->axis));
+	if(t < 0.0) {
+		return length_sq(priv->end[0] - sph.pos) <= radsq;
+	}
+	if(t > 1.0) {
+		return length_sq(priv->end[1] - sph.pos) <= radsq;
+	}
+	Vec3 projpt = priv->end[0] + priv->axis * t;
+	return length_sq(projpt - sph.pos) <= radsq;
 }
 
 bool ShapeCaps::intersect(const Ray &ray, HitPoint *hit) const

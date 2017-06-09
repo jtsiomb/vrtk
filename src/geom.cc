@@ -84,6 +84,68 @@ bool intersect(const Sphere &s1, const Sphere &s2, HitPoint *hit)
 	return true;
 }
 
+bool intersect(const Ray &ray, const Cylinder &cyl, HitPoint *hit)
+{
+	/* construct an orthonormal basis, to transform ray to a cylinder-friendly
+	 * coordinate system (cylinder axis aligned with the Y axis).
+	 */
+	Vec3 vj = normalize(cyl.end[1] - cyl.end[0]);
+	Vec3 vk = Vec3(0, 0, 1);
+	if(fabs(dot(vj, vk)) < 1e-3) {
+		vk = Vec3(1, 0, 0);
+	}
+	Vec3 vi = normalize(cross(vj, vk));
+	vk = cross(vi, vj);
+
+	Mat4 xform = Mat4(vi, vj, vk);
+	Mat4 inv_xform = transpose(xform);
+
+	Ray lray = inv_xform * ray;
+
+	float a = lray.dir.x * lray.dir.x + lray.dir.z * lray.dir.z;
+	float b = 2.0 * lray.dir.x * lray.origin.x + 2.0 * lray.dir.z * lray.origin.z;
+	float c = lray.origin.x * lray.origin.x + lray.origin.z * lray.origin.z - cyl.rad * cyl.rad;
+	float d = b * b - 4.0 * a * c;
+
+	if(d < 0.0) {
+		return false;
+	}
+	float sqrt_d = sqrt(d);
+	float t1 = (-b + sqrt_d) / (2.0 * a);
+	float t2 = (-b + sqrt_d) / (2.0 * a);
+
+	if(t1 < EPSILON && t2 < EPSILON) {
+		return false;
+	}
+
+	Vec3 p1 = lray.origin + lray.dir * t1;
+	Vec3 p2 = lray.origin + lray.dir * t2;
+
+	unsigned int valid = 3;
+	if(t1 < EPSILON || p1.y < cyl.end[0].y || p1.y >= cyl.end[1].y) {
+		valid &= ~1;
+		t1 = t2;
+	}
+	if(t2 < EPSILON || p2.y < cyl.end[0].y || p2.y >= cyl.end[1].y) {
+		valid &= ~2;
+		t2 = t1;
+	}
+
+	if(!valid) {
+		return false;
+	}
+
+	if(hit) {
+		hit->t = t1 < t2 ? t1 : t2;
+
+		hit->pos = ray.origin + ray.dir * hit->t;
+		hit->norm = Vec3(1.0, 0.0, 1.0) * hit->pos / cyl.rad;
+
+		hit->norm = xform.upper3x3() * hit->norm;
+	}
+	return true;
+}
+
 float proj_point_line_param(const Vec3 &pt, const Ray &ray)
 {
 	Vec3 pdir = normalize(pt - ray.origin);
