@@ -53,7 +53,9 @@ public:
 	virtual void set_shape(Shape *s);
 	virtual Shape *get_shape() const;
 
-	virtual void draw() const = 0;
+	virtual void set_draw_func(void (*func)(const Widget*, void*), void *cls = 0);
+
+	virtual void draw() const;
 };
 
 

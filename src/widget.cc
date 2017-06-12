@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <algorithm>
 #include "widget.h"
+#include "shape.h"
 
 namespace vrtk {
 
@@ -32,6 +33,9 @@ public:
 	bool xform_valid;
 
 	Shape *shape;
+
+	void (*draw_func)(const Widget*, void*);
+	void *draw_func_cls;
 };
 
 Widget::Widget()
@@ -40,6 +44,8 @@ Widget::Widget()
 	priv->parent = 0;
 	priv->scale = Vec3(1, 1, 1);
 	priv->shape = 0;
+	priv->draw_func = 0;
+	priv->draw_func_cls = 0;
 }
 
 Widget::~Widget()
@@ -152,5 +158,19 @@ Shape *Widget::get_shape() const
 	return priv->shape;
 }
 
+void Widget::set_draw_func(void (*func)(const Widget*, void*), void *cls)
+{
+	priv->draw_func = func;
+	priv->draw_func_cls = cls;
+}
+
+void Widget::draw() const
+{
+	if(priv->draw_func) {
+		priv->draw_func(this, priv->draw_func_cls);
+	} else if(priv->shape) {
+		priv->shape->draw();
+	}
+}
 
 }	// namespace vrtk

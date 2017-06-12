@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gmath/gmath.h>
 #include "shape_caps.h"
 #include "geom.h"
+#include "mesh.h"
 
 namespace vrtk {
 
@@ -29,6 +30,8 @@ public:
 	Vec3 axis;	// end[1] - end[0]
 	float axis_len;
 	bool derived_valid;
+
+	Mesh *mesh;	// only generated if it's needed
 };
 
 static void update_derived(ShapeCapsPriv *priv);
@@ -37,16 +40,19 @@ ShapeCaps::ShapeCaps()
 {
 	priv = new ShapeCapsPriv;
 	set_capsule(Vec3(0, 0, 0), Vec3(0, 0, 0), 1.0);
+	priv->mesh = 0;
 }
 
 ShapeCaps::ShapeCaps(const Vec3 &a, const Vec3 &b, float rad)
 {
 	priv = new ShapeCapsPriv;
 	set_capsule(a, b, rad);
+	priv->mesh = 0;
 }
 
 ShapeCaps::~ShapeCaps()
 {
+	delete priv->mesh;
 	delete priv;
 }
 
@@ -125,10 +131,17 @@ bool ShapeCaps::intersect(const Sphere &sph, HitPoint *hit) const
 
 bool ShapeCaps::intersect(const Ray &ray, HitPoint *hit) const
 {
+	Cylinder cyl = Cylinder(priv->end[0], priv->end[1], priv->rad);
+	return vrtk::intersect(ray, cyl, hit);
 }
 
 void ShapeCaps::draw() const
 {
+	if(!priv->mesh) {
+		priv->mesh = new Mesh;
+		// TODO generate
+	}
+	priv->mesh->draw();
 }
 
 static void update_derived(ShapeCapsPriv *priv)
@@ -138,6 +151,8 @@ static void update_derived(ShapeCapsPriv *priv)
 	priv->axis = priv->end[1] - priv->end[0];
 	priv->axis_len = length(priv->axis);
 	priv->derived_valid = true;
+
+	delete priv->mesh;
 }
 
 }	// namespace vrtk

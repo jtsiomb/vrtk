@@ -15,6 +15,7 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <float.h>
 #include "geom.h"
 
 namespace vrtk {
@@ -144,6 +145,71 @@ bool intersect(const Ray &ray, const Cylinder &cyl, HitPoint *hit)
 		hit->norm = xform.upper3x3() * hit->norm;
 	}
 	return true;
+}
+
+bool intersect(const Ray &ray, const AABox &box, HitPoint *hit)
+{
+	Vec3 param[2] = {box.min, box.max};
+	Vec3 inv_dir(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
+	int sign[3] = {inv_dir.x < 0, inv_dir.y < 0, inv_dir.z < 0};
+
+	float tmin = (param[sign[0]].x - ray.origin.x) * inv_dir.x;
+	float tmax = (param[1 - sign[0]].x - ray.origin.x) * inv_dir.x;
+	float tymin = (param[sign[1]].y - ray.origin.y) * inv_dir.y;
+	float tymax = (param[1 - sign[1]].y - ray.origin.y) * inv_dir.y;
+
+	if(tmin > tymax || tymin > tmax) {
+		return false;
+	}
+	if(tymin > tmin) {
+		tmin = tymin;
+	}
+	if(tymax < tmax) {
+		tmax = tymax;
+	}
+
+	float tzmin = (param[sign[2]].z - ray.origin.z) * inv_dir.z;
+	float tzmax = (param[1 - sign[2]].z - ray.origin.z) * inv_dir.z;
+
+	if(tmin > tzmax || tzmin > tmax) {
+		return false;
+	}
+	if(tzmin > tmin) {
+		tmin = tzmin;
+	}
+	if(tzmax < tmax) {
+		tmax = tzmax;
+	}
+
+	float t = tmin < 1e-4 ? tmax : tmin;
+	if(t >= 1e-4) {
+
+		if(hit) {
+			hit->t = t;
+			hit->pos = ray.origin + ray.dir * t;
+
+			float min_dist = FLT_MAX;
+			Vec3 offs = box.min + (box.max - box.min) / 2.0;
+			Vec3 local_hit = hit->pos - offs;
+
+			static const Vec3 axis[] = {
+				Vec3(1, 0, 0), Vec3(0, 1, 0), Vec3(0, 0, 1)
+			};
+			//int tcidx[][2] = {{2, 1}, {0, 2}, {0, 1}};
+
+			for(int i=0; i<3; i++) {
+				float dist = fabs((box.max[i] - offs[i]) - fabs(local_hit[i]));
+				if(dist < min_dist) {
+					min_dist = dist;
+					hit->norm = axis[i] * (local_hit[i] < 0.0 ? 1.0 : -1.0);
+					//hit->texcoord = Vec2(hit->pos[tcidx[i][0]], hit->pos[tcidx[i][1]]);
+				}
+			}
+		}
+		return true;
+	}
+	return false;
+
 }
 
 float proj_point_line_param(const Vec3 &pt, const Ray &ray)

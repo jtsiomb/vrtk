@@ -25,6 +25,7 @@ namespace vrtk {
 struct HitPoint {
 	float t;
 	Vec3 pos, norm;
+	const void *obj;
 };
 
 
@@ -46,9 +47,18 @@ public:
 	Cylinder(const Vec3 &e0, const Vec3 &e1, float rad);
 };
 
+class AABox {
+public:
+	Vec3 min, max;
+
+	AABox();
+	AABox(const Vec3 &min, const Vec3 &max);
+};
+
 bool intersect(const Ray &ray, const Sphere &sph, HitPoint *hit = 0);
 bool intersect(const Sphere &s1, const Sphere &s2, HitPoint *hit = 0);
 bool intersect(const Ray &ray, const Cylinder &cyl, HitPoint *hit = 0);
+bool intersect(const Ray &ray, const AABox &box, HitPoint *hit = 0);
 
 float proj_point_line_param(const Vec3 &pt, const Ray &ray);
 
