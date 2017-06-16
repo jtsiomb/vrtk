@@ -31,8 +31,6 @@ private:
 public:
 	Button();
 	virtual ~Button();
-
-	void draw() const;
 };
 
 }	// namespace vrtk

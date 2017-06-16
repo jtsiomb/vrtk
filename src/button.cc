@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "button.h"
+#include "shape_caps.h"
 
 namespace vrtk {
 
@@ -26,15 +27,14 @@ public:
 Button::Button()
 {
 	priv = new ButtonPriv;
+
+	ShapeCaps *shape = new ShapeCaps(Vec3(-1, 0, 0), Vec3(1, 0, 0), 0.5);
+	set_shape(shape);
 }
 
 Button::~Button()
 {
 	delete priv;
-}
-
-void Button::draw() const
-{
 }
 
 }	// namespace vrtk

@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "shape_caps.h"
 #include "geom.h"
 #include "mesh.h"
+#include "meshgen.h"
 
 namespace vrtk {
 
@@ -129,8 +130,22 @@ bool ShapeCaps::intersect(const Sphere &sph, HitPoint *hit) const
 	return length_sq(projpt - sph.pos) <= radsq;
 }
 
+
+/* XXX doesn't always return the nearest intersection, but for our use it
+ * doesn't matter
+ */
 bool ShapeCaps::intersect(const Ray &ray, HitPoint *hit) const
 {
+	Sphere sph0 = Sphere(priv->end[0], priv->rad);
+	if(vrtk::intersect(ray, sph0, hit)) {
+		return true;
+	}
+
+	Sphere sph1 = Sphere(priv->end[1], priv->rad);
+	if(vrtk::intersect(ray, sph1, hit)) {
+		return true;
+	}
+
 	Cylinder cyl = Cylinder(priv->end[0], priv->end[1], priv->rad);
 	return vrtk::intersect(ray, cyl, hit);
 }
@@ -138,8 +153,27 @@ bool ShapeCaps::intersect(const Ray &ray, HitPoint *hit) const
 void ShapeCaps::draw() const
 {
 	if(!priv->mesh) {
+		update_derived(priv);
+
+		Vec3 dir = priv->axis;
+		float dirlen = priv->axis_len;
+		if(dirlen != 0.0) {
+			dir /= dirlen;
+		}
+
 		priv->mesh = new Mesh;
-		// TODO generate
+		gen_capsule(priv->mesh, priv->rad, dirlen, 16, 16);
+
+		Vec3 vk = Vec3(0, 0, 1);
+		if(1.0 - fabs(dot(dir, vk)) < 1e-3) {
+			vk = Vec3(0, 1, 0);
+		}
+
+		Vec3 right = normalize(cross(dir, vk));
+		vk = cross(right, dir);
+
+		Mat4 xform = Mat4(right, dir, vk);
+		priv->mesh->apply_xform(xform);
 	}
 	priv->mesh->draw();
 }

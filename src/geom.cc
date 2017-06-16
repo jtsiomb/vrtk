@@ -31,6 +31,30 @@ Sphere::Sphere(const Vec3 &pos, float rad)
 	this->rad = rad;
 }
 
+Cylinder::Cylinder()
+{
+	end[0] = Vec3(0, 0, 0);
+	end[1] = Vec3(0, 1, 0);
+	rad = 0.5;
+}
+
+Cylinder::Cylinder(const Vec3 &e0, const Vec3 &e1, float rad)
+{
+	end[0] = e0;
+	end[1] = e1;
+	this->rad = rad;
+}
+
+AABox::AABox()
+	: min(-1, -1, -1), max(1, 1, 1)
+{
+}
+
+AABox::AABox(const Vec3 &min, const Vec3 &max)
+	: min(min), max(max)
+{
+}
+
 #define EPSILON	1e-5f
 
 bool intersect(const Ray &ray, const Sphere &sph, HitPoint *hit)

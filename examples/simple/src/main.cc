@@ -13,6 +13,8 @@ void mmotion(int x, int y);
 
 float cam_theta, cam_phi, cam_dist = 10;
 
+vrtk::Button *bn;
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -30,9 +32,12 @@ int main(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_CULL_FACE);
 
 	float ldir[] = {-1, 1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, ldir);
+
+	bn = new vrtk::Button;
 
 	glutMainLoop();
 	return 0;
@@ -48,9 +53,7 @@ void display()
 	glRotatef(cam_phi, 1, 0, 0);
 	glRotatef(cam_theta, 0, 1, 0);
 
-	glFrontFace(GL_CW);
-	glutSolidTeapot(1.0);
-	glFrontFace(GL_CCW);
+	bn->draw();
 
 	glutSwapBuffers();
 	assert(glGetError() == GL_NO_ERROR);

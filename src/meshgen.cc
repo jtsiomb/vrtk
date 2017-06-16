@@ -384,35 +384,24 @@ void gen_cylinder(Mesh *mesh, float rad, float height, int usub, int vsub, int c
 	}
 }
 
-struct CapsParam {
-	float rad;
-	float height;
-};
-
-Vec2 capsule_revol(float u, float v, void *cls)
-{
-	CapsParam *p = (CapsParam*)cls;
-
-	float y = v * (p->height + p->rad * 2.0f);
-	float x = p->rad;
-	if(y < p->rad) {
-		float theta = M_PI * 0.5 * y / p->rad;
-		x = sin(theta) * p->rad;
-	} else if(y >= p->rad + p->height) {
-		float theta = M_PI * 0.5 * (y - p->rad - p->height) / p->rad;
-		x = cos(theta) * p->rad;
-	}
-
-	return Vec2(x, y);
-}
+// --------- capsule --------
 
 void gen_capsule(Mesh *mesh, float rad, float height, int usub, int vsub)
 {
-	CapsParam param;
-	param.rad = rad;
-	param.height = height;
+	gen_cylinder(mesh, rad, height, usub, vsub);
 
-	gen_revol(mesh, usub, vsub, capsule_revol, &param);
+	Mesh tmp;
+	gen_sphere(&tmp, rad, usub, usub, 1.0, 0.5);
+
+	Mat4 xform;
+	xform.rotation_z(M_PI);
+	xform.translate(0, -height / 2, 0);
+	tmp.apply_xform(xform);
+	mesh->append(tmp);
+
+	xform.rotation_z(M_PI);
+	tmp.apply_xform(xform);
+	mesh->append(tmp);
 }
 
 // -------- cone --------
