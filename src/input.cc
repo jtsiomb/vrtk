@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "input.h"
+#include "widget.h"
 
 namespace vrtk {
 
@@ -24,9 +25,26 @@ static Ray ptr_ray;
 static Vec3 ptr_pos;
 static Quat ptr_rot;
 
+static Widget *kbfocus;
+
+void set_keyboard_focus(Widget *w)
+{
+	if(kbfocus) {
+		kbfocus->on_input_focus(false);
+	}
+	kbfocus = w;
+	w->on_input_focus(true);
+}
+
 void input_keyboard(int key, bool pressed)
 {
-	// TODO generate event to the currently focused widget
+	if(kbfocus) {
+		if(pressed) {
+			kbfocus->on_key_press(key);
+		} else {
+			kbfocus->on_key_release(key);
+		}
+	}
 }
 
 void input_ray_pointer(const Vec3 &origin, const Vec3 &dir)

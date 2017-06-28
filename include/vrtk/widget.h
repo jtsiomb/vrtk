@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VRTK_WIDGET_H_
 
 #include <gmath/gmath.h>
+#include "boolanim.h"
 
 namespace vrtk {
 
@@ -26,7 +27,7 @@ class WidgetPriv;
 class Shape;
 
 class Widget {
-private:
+protected:
 	WidgetPriv *priv;
 
 public:
@@ -56,6 +57,29 @@ public:
 	virtual void set_draw_func(void (*func)(const Widget*, void*), void *cls = 0);
 
 	virtual void draw() const;
+
+	// ---- state ----
+	virtual BoolAnim &visible();
+	virtual BoolAnim &focused();
+	virtual BoolAnim &hover();
+	virtual BoolAnim &dragged();
+	virtual BoolAnim &active();
+
+	// ---- events ----
+	virtual void on_input_focus(bool focus);
+	virtual void on_key_press(int key);
+	virtual void on_key_release(int key);
+
+	virtual void on_hover(bool hover);
+	virtual void on_grab(const Vec3 &pos, const Quat &rot);
+	virtual void on_release(const Vec3 &pos, const Quat &rot);
+	virtual void on_drag(const Vec3 &pos, const Quat &rot);
+
+	/* a grab, followed by a release without "significant" change of
+	 * position and orientation (see: set_drag_threshold in input.h)
+	 * causes an activation instead of a drag.
+	 */
+	virtual void on_activate(const Vec3 &pos, const Quat &rot);
 };
 
 

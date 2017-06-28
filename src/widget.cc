@@ -36,6 +36,8 @@ public:
 
 	void (*draw_func)(const Widget*, void*);
 	void *draw_func_cls;
+
+	BoolAnim visible, focused, hover, grabbed, active;
 };
 
 Widget::Widget()
@@ -172,5 +174,79 @@ void Widget::draw() const
 		priv->shape->draw();
 	}
 }
+
+BoolAnim &Widget::visible()
+{
+	return priv->visible;
+}
+
+BoolAnim &Widget::focused()
+{
+	return priv->focused;
+}
+
+BoolAnim &Widget::hover()
+{
+	return priv->hover;
+}
+
+BoolAnim &Widget::dragged()
+{
+	return priv->dragged;
+}
+
+BoolAnim &Widget::active()
+{
+	return priv->active;
+}
+
+/* the base Widget class implements all events as empty functions instead
+ * of pure virtual ones, to allow the subclasses to override them selectively
+ * and leave the rest as nops.
+ */
+void Widget::on_input_focus(bool focus)
+{
+	priv->focused = focus;
+}
+
+void Widget::on_key_press(int key)
+{
+}
+
+void Widget::on_key_release(int key)
+{
+}
+
+
+void Widget::on_hover(bool hover)
+{
+	priv->hover = hover;
+}
+
+void Widget::on_grab(const Vec3 &pos, const Quat &rot)
+{
+	priv->grabbed = true;
+	priv->grab_pos = pos;
+	priv->grab_rot = rot;
+}
+
+void Widget::on_release(const Vec3 &pos, const Quat &rot)
+{
+	priv->grabbed = false;
+}
+
+void Widget::on_drag(const Vec3 &pos, const Quat &rot)
+{
+	priv->grab_pos = pos;
+	priv->grab_rot = rot;
+}
+
+
+void Widget::on_activate(const Vec3 &pos, const Quat &rot)
+{
+	// TODO remind me how goatkit handled activation/deactivation
+	priv->active = true;
+}
+
 
 }	// namespace vrtk

@@ -29,8 +29,8 @@ else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall")
 endif()
 
-target_include_directories(vrtk PUBLIC include PRIVATE include/vrtk)
-target_include_directories(vrtk-static PUBLIC include PRIVATE include/vrtk)
+target_include_directories(vrtk PUBLIC include PRIVATE include/vrtk src)
+target_include_directories(vrtk-static PUBLIC include PRIVATE include/vrtk src)
 
 include_directories(/usr/local/include)
 

@@ -44,6 +44,18 @@ enum {
 	KEY_RALT = 0xffea
 };
 
+class Widget;
+
+/* distance threshold from initial grab that must be exceeded
+ * in order to start a drag, as opposed to triggering an activation
+ * when the widget is released
+ */
+void set_drag_threshold(float dist);
+float get_drag_threshold();
+
+void set_keyboard_focus(Widget *w);
+Widget *get_keyboard_focus();
+
 void input_keyboard(int key, bool pressed);
 
 void input_ray_pointer(const Vec3 &origin, const Vec3 &dir);

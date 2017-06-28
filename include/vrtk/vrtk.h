@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef VRTK_H_
 #define VRTK_H_
 
+#include "input.h"
+
+/* widgets */
 #include "widget.h"
 #include "button.h"
 
