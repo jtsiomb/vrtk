@@ -38,6 +38,8 @@ public:
 	void *draw_func_cls;
 
 	BoolAnim visible, focused, hover, grabbed, active;
+	Vec3 grab_pos;
+	Quat grab_rot;
 };
 
 Widget::Widget()
@@ -192,7 +194,7 @@ BoolAnim &Widget::hover()
 
 BoolAnim &Widget::dragged()
 {
-	return priv->dragged;
+	return priv->grabbed;
 }
 
 BoolAnim &Widget::active()

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VRTK_WIDGET_H_
 
 #include <gmath/gmath.h>
-#include "boolanim.h"
+#include "boolanm.h"
 
 namespace vrtk {
 
