@@ -17,26 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <float.h>
 #include <vector>
-#include "ui.h"
+#include "widgetgroup.h"
 #include "shape.h"
 #include "geom.h"
 
 namespace vrtk {
 
-class UIPriv {
+class WidgetGroupPriv {
 public:
 	std::vector<Widget*> widgets;
-
-	Widget *hover, *focus;	// TODO moved to input.h/cc
 };
 
-UI::UI()
+WidgetGroup::WidgetGroup()
 {
-	priv = new UIPriv;
-	priv->hover = priv->focus = 0;
+	priv = new WidgetGroupPriv;
 }
 
-UI::~UI()
+WidgetGroup::~WidgetGroup()
 {
 	int num = priv->widgets.size();
 	for(int i=0; i<num; i++) {
@@ -45,7 +42,7 @@ UI::~UI()
 	delete priv;
 }
 
-void UI::add_widget(Widget *w)
+void WidgetGroup::add_widget(Widget *w)
 {
 	int num = priv->widgets.size();
 	for(int i=0; i<num; i++) {
@@ -55,7 +52,7 @@ void UI::add_widget(Widget *w)
 	priv->widgets.push_back(w);
 }
 
-bool UI::remove_widget(Widget *w)
+bool WidgetGroup::remove_widget(Widget *w)
 {
 	int num = priv->widgets.size();
 	for(int i=0; i<num; i++) {
@@ -67,7 +64,7 @@ bool UI::remove_widget(Widget *w)
 	return false;
 }
 
-bool UI::contains(const Vec3 &pt) const
+bool WidgetGroup::contains(const Vec3 &pt) const
 {
 	int num = priv->widgets.size();
 	for(int i=0; i<num; i++) {
@@ -79,7 +76,7 @@ bool UI::contains(const Vec3 &pt) const
 	return false;
 }
 
-bool UI::intersect(const Ray &ray, HitPoint *hit) const
+bool WidgetGroup::intersect(const Ray &ray, HitPoint *hit) const
 {
 	HitPoint nearest;
 	nearest.obj = 0;
@@ -99,7 +96,7 @@ bool UI::intersect(const Ray &ray, HitPoint *hit) const
 	return nearest.obj != 0;
 }
 
-void UI::draw() const
+void WidgetGroup::draw() const
 {
 	int num = priv->widgets.size();
 	for(int i=0; i<num; i++) {

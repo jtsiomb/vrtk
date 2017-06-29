@@ -23,7 +23,7 @@ bool mouse_pending, sball_pending;
 Vec3 sbpos;
 Quat sbrot;
 
-vrtk::Button *bn;
+vrtk::WidgetGroup *wgroup;
 
 int main(int argc, char **argv)
 {
@@ -51,7 +51,10 @@ int main(int argc, char **argv)
 	float ldir[] = {-1, 1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, ldir);
 
-	bn = new vrtk::Button;
+	wgroup = new vrtk::WidgetGroup;
+
+	vrtk::Button *bn = new vrtk::Button;
+	wgroup->add_widget(bn);
 
 	glutMainLoop();
 	return 0;
@@ -70,7 +73,7 @@ void display()
 	glRotatef(cam_phi, 1, 0, 0);
 	glRotatef(cam_theta, 0, 1, 0);
 
-	bn->draw();
+	wgroup->draw();
 
 	glutSwapBuffers();
 	assert(glGetError() == GL_NO_ERROR);

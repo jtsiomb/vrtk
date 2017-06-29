@@ -15,23 +15,23 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef VRTK_UI_H_
-#define VRTK_UI_H_
+#ifndef VRTK_WIDGET_GROUP_H_
+#define VRTK_WIDGET_GROUP_H_
 
 #include "widget.h"
 
 namespace vrtk {
 
 class HitPoint;
-class UIPriv;
+class WidgetGroupPriv;
 
-class UI {
+class WidgetGroup {
 private:
-	UIPriv *priv;
+	WidgetGroupPriv *priv;
 
 public:
-	UI();
-	~UI();
+	WidgetGroup();
+	~WidgetGroup();
 
 	void add_widget(Widget *w);
 	bool remove_widget(Widget *w);
@@ -45,4 +45,4 @@ public:
 
 }	// namespace vrtk
 
-#endif	/* VRTK_UI_H_ */
+#endif	/* VRTK_WIDGET_GROUP_H_ */

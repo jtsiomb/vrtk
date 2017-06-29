@@ -202,6 +202,11 @@ BoolAnim &Widget::active()
 	return priv->active;
 }
 
+bool Widget::can_receive_focus() const
+{
+	return false;
+}
+
 /* the base Widget class implements all events as empty functions instead
  * of pure virtual ones, to allow the subclasses to override them selectively
  * and leave the rest as nops.

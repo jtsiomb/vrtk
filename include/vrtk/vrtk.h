@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "input.h"
 
+#include "widgetgroup.h"
+
 /* widgets */
 #include "widget.h"
 #include "button.h"

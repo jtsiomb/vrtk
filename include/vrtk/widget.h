@@ -66,6 +66,7 @@ public:
 	virtual BoolAnim &active();
 
 	// ---- events ----
+	virtual bool can_receive_focus() const;
 	virtual void on_input_focus(bool focus);
 	virtual void on_key_press(int key);
 	virtual void on_key_release(int key);
